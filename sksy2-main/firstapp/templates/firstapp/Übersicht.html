@@ -52,7 +52,7 @@
                 <td>{{todo.percent}}</td>
                 <td>
                   <a class="btn btn-primary" href="{% url 'edit' todo.id %}" role="button">Edit</a>
-                  <button type="button" class="close" onclick="delRow()">&#215</button>
+                  <a class="btn btn-primary" href="{% url 'delete' todo.id %}" role="button">Delete</a>
                 </td>
               </tr> 
             {% endfor %}

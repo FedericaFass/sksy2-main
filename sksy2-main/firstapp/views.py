@@ -21,7 +21,7 @@ def edit(request, todo_id):
     form = TodoForm(request.POST or None, instance=todo)
     if form.is_valid():
             form.save()
-            return redirect('Übbersicht')
+            
     return render(request, 'firstapp/EditTODO.html', {'todo': todo , 'form' : form} )
 
 def new(request):
@@ -34,6 +34,11 @@ def new(request):
             
     context = {'form' : form}
     return render(request, 'firstapp/NewTODO.html', context)
+
+def delete(request, todo_id):
+     todo = Todo.objects.get(pk=todo_id)
+     todo.delete()
+     return redirect('Übersicht')
 
 def impressum(request):
     return render(request, 'firstapp/Impressum.html')
