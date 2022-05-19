@@ -1,6 +1,6 @@
 from multiprocessing import context
 from tkinter import Entry
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -17,20 +17,24 @@ def index(request):
     return HttpResponse("It started correctly, nice")
 
 def edit(request, todo_id):
-    elem = get_object_or_404(Todo, pk=todo_id)
-    return render(request, 'firstapp/EditTODO.html', {'todo.title' : elem.title}, {'todo.deadline' : elem.deadline}, {'todo.percent' : elem.percent})
+    todo = Todo.objects.get(pk=todo_id)
+    form = TodoForm(request.POST or None, instance=todo)
+    if form.is_valid():
+            form.save()
+            return redirect('Übbersicht')
+    return render(request, 'firstapp/EditTODO.html', {'todo': todo , 'form' : form} )
 
 def new(request):
-    submitted = False
-    if request.method =="POST":
+    form = TodoForm
+    if request.method== 'POST' :
+        print(request.POST)
         form = TodoForm(request.POST)
-        form.save()
-        return HttpResponseRedirect('/New submitted=True')
-    else:
-      form = TodoForm()
-      if 'submitted' in request.GET:
-          submitted = True
-    return render(request, 'firstapp/NewTODO.html', {'form' : form, 'submitted' : submitted})
+        if form.is_valid():
+            form.save()
+            
+    context = {'form' : form}
+    return render(request, 'firstapp/NewTODO.html', context)
 
 def impressum(request):
     return render(request, 'firstapp/Impressum.html')
+    
